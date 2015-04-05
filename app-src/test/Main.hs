@@ -64,6 +64,14 @@ rectsPush2Test =
       pushV = V2 1 (-1) ^* (0.5 * 0.5)
   in  pushVector rect1 rect2Moved @?= Just pushV
 
+rectsDistTest :: Assertion
+rectsDistTest =
+  let rect1 = [V2 0 0, V2 1 0, V2 1 1, V2 0 1] :: Polygon
+      rect2 = [V2 1 0, V2 0 1, V2 (-1) 0, V2 0 (-1)] :: Polygon
+      rect2Moved = map (+ V2 3 0.5) rect2
+      distVec = (1.0, V2 1 0)
+  in  polygonDistance rect1 rect2Moved @?= distVec
+
 main = defaultMain tests
   where tests = [ testCase "boxCollision" rectsCollisionTest
                 , testCase "bolCollision2" rectsCollision2Test
@@ -73,4 +81,5 @@ main = defaultMain tests
                 , testCase "projectAxis" projectAxisTest
                 , testCase "boxPush" rectsPushTest
                 , testCase "boxPush2" rectsPush2Test
+                , testCase "boxDist" rectsDistTest
                 ]

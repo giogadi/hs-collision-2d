@@ -1,5 +1,8 @@
+import Data.Maybe
 import Data.Monoid
+import Linear.Metric
 import Linear.V2
+import Linear.Vector
 import Test.HUnit
 import Test.Framework
 import Test.Framework.Providers.HUnit
@@ -45,6 +48,22 @@ rectsCollisionFree2Test =
       rect2Moved = map (+ V2 2.001 0.5) rect2
   in inCollision rect1 rect2Moved @?= False
 
+rectsPushTest :: Assertion
+rectsPushTest =
+  let rect1 = [V2 0 0, V2 1 0, V2 1 1, V2 0 1] :: Polygon
+      rect2 = map (+ V2 0.8 0) rect1
+      pushV = V2 0.2 0
+      errorV = fromJust (pushVector rect1 rect2) - pushV
+  in  quadrance errorV < 0.00001 @?= True
+
+rectsPush2Test :: Assertion
+rectsPush2Test =
+  let rect1 = [V2 0 0, V2 1 0, V2 1 1, V2 0 1] :: Polygon
+      rect2 = [V2 1 0, V2 0 1, V2 (-1) 0, V2 0 (-1)] :: Polygon
+      rect2Moved = map (+ V2 1 (-0.5)) rect2
+      pushV = V2 1 (-1) ^* (0.5 * 0.5)
+  in  pushVector rect1 rect2Moved @?= Just pushV
+
 main = defaultMain tests
   where tests = [ testCase "boxCollision" rectsCollisionTest
                 , testCase "bolCollision2" rectsCollision2Test
@@ -52,4 +71,6 @@ main = defaultMain tests
                 , testCase "boxCollisionFree2" rectsCollisionFree2Test
                 , testCase "sepAxisNormals" separatingAxisNormalsTest
                 , testCase "projectAxis" projectAxisTest
+                , testCase "boxPush" rectsPushTest
+                , testCase "boxPush2" rectsPush2Test
                 ]

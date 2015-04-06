@@ -6,6 +6,7 @@ module Data.Collision
        , projectPolygonOntoAxisInterval
        , pushVector
        , polygonDistance
+       , signedDistance
        ) where
 
 import Data.List
@@ -109,3 +110,9 @@ polygonDistance polyA polyB =
         [segmentSegmentDistance ea1 ea2 eb1 eb2 |
           (ea1, ea2) <- edgesA, (eb1, eb2) <- edgesB]
   in  minimumBy (comparing fst) distVecs
+
+signedDistance :: Polygon -> Polygon -> (Double, V2 Double)
+signedDistance polyA polyB =
+  case pushVector polyA polyB of
+    Just pushVec -> (negate $ norm pushVec, pushVec)
+    Nothing -> polygonDistance polyA polyB

@@ -1,5 +1,4 @@
 import Data.Maybe
-import Data.Monoid
 import Linear.Metric
 import Linear.V2
 import Linear.Vector
